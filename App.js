@@ -22,8 +22,8 @@ export default function App(props) {
   } else {
     return (
       <View style={styles.container}>
-          <Header />
-          {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+        <Header />
+        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <AppNavigator />
       </View>
     );
