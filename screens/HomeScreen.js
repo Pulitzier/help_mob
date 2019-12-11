@@ -1,7 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -10,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { medCentrs } from '../constants/mock';
-import { MonoText } from '../components/StyledText';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class HomeScreen extends Component {
   handleChooseCenter = (item) => {
@@ -36,9 +35,9 @@ export default class HomeScreen extends Component {
               >
                 <View style={styles.centrCardStyles} key={item.title}>
                   <Text style={styles.titleStyles}>{item.title}</Text>
-                  <Text>{item.adress}</Text>
-                  <Text>{item.workingHours}</Text>
-                  <Text>{item.type}</Text>
+                  <Text style={styles.centrType}>{item.type}</Text>
+                  <Text><Icon name="map-marker" size={15} color="blue" style={{display: 'flex'}} /> {item.adress}</Text>
+                  <Text><Icon name="clock-o" size={15} color="blue" /> {item.workingHours}</Text>
                 </View>
               </TouchableOpacity>
             ))
@@ -77,6 +76,9 @@ const styles = StyleSheet.create({
   titleStyles: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  centrType: {
+    color: "#ae020b"
   },
   buttonStyle: {
     marginVertical: 0,

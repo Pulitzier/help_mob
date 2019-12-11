@@ -1,11 +1,9 @@
 import React from 'react';
 import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import CenterScreen from '../screens/CenterScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import DoctorScreen from '../screens/DoctorScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -16,46 +14,35 @@ const config = Platform.select({
 });
 
 const HomeStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-  },
+  { Home: HomeScreen },
   config
 );
-
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
-};
-
+HomeStack.navigationOptions = { title: 'Home' };
 HomeStack.path = '';
 
 // Here comes Center Screen
 const CenterStack = createStackNavigator(
-  {
-    Center: CenterScreen,
-  },
+  { Center: CenterScreen },
   config
 );
-
-CenterStack.navigationOptions = {
-  title: 'Center',
-};
-
+CenterStack.navigationOptions = { title: 'Center' };
 CenterStack.path = '';
 // Here ends Center Screen
+
+// Here comes Doctor Screen
+const DoctorStack = createStackNavigator(
+  { Doctor: DoctorScreen },
+  config
+);
+DoctorStack.navigationOptions = { title: 'Doctor' };
+DoctorStack.path = '';
+// Here ends Doctor Screen
+
 
 const screenNavigator = createStackNavigator({
     HomeStack,
     CenterStack,
+    DoctorStack,
   },
   config,
 );

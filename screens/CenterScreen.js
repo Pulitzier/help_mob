@@ -6,11 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { doctors } from '../constants/mock';
 
 export default class CenterScreen extends Component {
   handleChooseDoctor = (doctor) => {
-    console.log(doctor);
     this.props.navigation.navigate(
       'Doctor',
       { doctorProps: doctor }
@@ -24,19 +24,24 @@ export default class CenterScreen extends Component {
     console.log(medCenter);
     return (
       <View>
-        <Text>{medCenter.title}</Text>
-        <Text>{medCenter.adress}</Text>
-        <Text>{medCenter.workingHours}</Text>
-        <Text>{medCenter.type}</Text>
-        <ScrollView horizontal={true}>
+        <View style={styles.centrCardStyles}>
+          <Text>{medCenter.title}</Text>
+          <Text style={styles.centrType}>{medCenter.type}</Text>
+          <Text><Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {medCenter.adress}</Text>
+          <Text><Icon name="clock-o" size={15} color="blue"/> {medCenter.workingHours}</Text>
+        </View>
+        {
+          medCenter.filters.length
+          && <ScrollView horizontal={true} style={styles.horizontalScroll}>
           {
-            medCenter.filters.length
-            && medCenter.filters.map((filter) => (
+            medCenter.filters.map((filter) => (
                 <Text style={styles.filterStyles} key={filter}>{filter}</Text>
               )
             )
           }
         </ScrollView>
+
+        }
         <ScrollView>
           {
             doctors.map((doctor) => (
@@ -61,6 +66,14 @@ export default class CenterScreen extends Component {
 };
 
 const styles = StyleSheet.create({
+  centrCardStyles: {
+    backgroundColor: '#fff',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  horizontalScroll: {
+    paddingBottom: 10,
+  },
   filterStyles: {
     backgroundColor: 'gray',
     paddingVertical: 10,
@@ -68,6 +81,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginHorizontal: 5,
     color: "#fff",
+  },
+  centrType: {
+    color: "#ae020b"
   },
   doctorCardStyles: {
     backgroundColor: '#fff',
