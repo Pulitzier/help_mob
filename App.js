@@ -35,6 +35,7 @@ async function loadResourcesAsync() {
     Asset.loadAsync([
       require('./assets/images/robot-dev.png'),
       require('./assets/images/robot-prod.png'),
+      require('./assets/images/icon_136x113.jpg'),
     ]),
     Font.loadAsync({
       // This is the font that we are using for our tab bar

@@ -10,6 +10,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { doctors } from '../constants/mock';
 
 export default class CenterScreen extends Component {
+  state = {
+    type: 'All'
+  }
+
   handleChooseDoctor = (doctor) => {
     this.props.navigation.navigate(
       'Doctor',
@@ -17,11 +21,14 @@ export default class CenterScreen extends Component {
     );
   }
 
+  filter = (type) => this.setState({ type });
+
   getDegree = (doctor) => (doctor.degree.length !== 0) ? doctor.degree : "Не указано";
 
   render() {
     const medCenter = this.props.navigation.getParam("itemProps");
-    console.log(medCenter);
+    console.log(this.state);
+    const { type } = this.state;
     return (
       <View>
         <View style={styles.centrCardStyles}>
@@ -30,35 +37,44 @@ export default class CenterScreen extends Component {
           <Text><Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {medCenter.adress}</Text>
           <Text><Icon name="clock-o" size={15} color="blue"/> {medCenter.workingHours}</Text>
         </View>
-        {
-          medCenter.filters.length
-          && <ScrollView horizontal={true} style={styles.horizontalScroll}>
+        <ScrollView horizontal={true} style={styles.horizontalScroll}>
+          <TouchableOpacity onPress={() => this.filter('All')} style={styles.filterStyles}>
+            <Text style={styles.filterText}>All</Text>
+          </TouchableOpacity>
           {
-            medCenter.filters.map((filter) => (
-                <Text style={styles.filterStyles} key={filter}>{filter}</Text>
+            medCenter.filters.length &&
+            medCenter.filters.map(type => (
+                <TouchableOpacity onPress={() => this.filter(type)} key={type} style={styles.filterStyles}>
+                  <Text key={type} style={styles.filterText}>{type}</Text>
+                </TouchableOpacity>
               )
             )
           }
         </ScrollView>
-
-        }
-        <ScrollView>
-          {
-            doctors.map((doctor) => (
-              <TouchableOpacity
-                onPress={() => this.handleChooseDoctor(doctor)}
-                key={doctor.fullName}
-                style={styles.buttonStyle}
-              >
-                <View style={styles.doctorCardStyles} key={doctor.fullName}>
-                  <Text style={styles.titleStyles}>{doctor.fullName}</Text>
-                  <Text>Стаж работы: {doctor.experience}</Text>
-                  <Text>Ученая степень: {this.getDegree(doctor)}</Text>
-                  <Text>Категория: {doctor.category}</Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          }
+        <ScrollView horizontal={false}>
+          <View>
+            {
+              doctors
+                .filter(doc => {
+                  if (type === 'All') return true;
+                  return doc.profArea.includes(type);
+                })
+                .map(doctor => (
+                  <TouchableOpacity
+                    onPress={() => this.handleChooseDoctor(doctor)}
+                    key={doctor.fullName}
+                    style={styles.buttonStyle}
+                  >
+                    <View style={styles.doctorCardStyles} key={doctor.fullName}>
+                      <Text style={styles.titleStyles}>{doctor.fullName}</Text>
+                      <Text>Стаж работы: {doctor.experience}</Text>
+                      <Text>Ученая степень: {this.getDegree(doctor)}</Text>
+                      <Text>Категория: {doctor.category}</Text>
+                    </View>
+                  </TouchableOpacity>
+                ))
+            }
+          </View>
         </ScrollView>
       </View>
     )
@@ -80,10 +96,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     marginHorizontal: 5,
-    color: "#fff",
+    alignContent: 'center',
+  },
+  filterText: {
+    color: '#fff',
+    top: -3,
   },
   centrType: {
-    color: "#ae020b"
+    color: '#ae020b',
   },
   doctorCardStyles: {
     backgroundColor: '#fff',
