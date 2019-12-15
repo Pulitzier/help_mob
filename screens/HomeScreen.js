@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { medCentrs } from '../constants/mock';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Header from "../components/Header";
 
 export default class HomeScreen extends Component {
   handleChooseCenter = (item) => {
@@ -22,27 +23,32 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          {
-            medCentrs.map((item) => (
-              <TouchableOpacity
-                onPress={() => this.handleChooseCenter(item)}
-                key={item.title}
-                style={styles.buttonStyle}
-              >
-                <View style={styles.centrCardStyles} key={item.title}>
-                  <Text style={styles.titleStyles}>{item.title}</Text>
-                  <Text style={styles.centrType}>{item.type}</Text>
-                  <Text><Icon name="map-marker" size={15} color="blue" style={{display: 'flex'}} /> {item.adress}</Text>
-                  <Text><Icon name="clock-o" size={15} color="blue" /> {item.workingHours}</Text>
-                </View>
-              </TouchableOpacity>
-            ))
-          }
-        </ScrollView>
+        <Header/>
+        <View style={styles.container}>
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
+          >
+            {
+              medCentrs.map((item) => (
+                <TouchableOpacity
+                  onPress={() => this.handleChooseCenter(item)}
+                  key={item.title}
+                  style={styles.buttonStyle}
+                >
+                  <View style={styles.centrCardStyles} key={item.title}>
+                    <Text style={styles.titleStyles}>{item.title}</Text>
+                    <Text style={styles.centrType}>{item.type}</Text>
+                    <Text>
+                      <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.adress}
+                    </Text>
+                    <Text><Icon name="clock-o" size={15} color="blue"/> {item.workingHours}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            }
+          </ScrollView>
+        </View>
       </View>
     );
   }

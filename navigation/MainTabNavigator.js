@@ -18,7 +18,6 @@ const HomeStack = createStackNavigator(
   config
 );
 HomeStack.navigationOptions = { title: 'Home' };
-HomeStack.path = '';
 
 // Here comes Center Screen
 const CenterStack = createStackNavigator(
@@ -26,7 +25,6 @@ const CenterStack = createStackNavigator(
   config
 );
 CenterStack.navigationOptions = { title: 'Center' };
-CenterStack.path = '';
 // Here ends Center Screen
 
 // Here comes Doctor Screen
@@ -35,7 +33,6 @@ const DoctorStack = createStackNavigator(
   config
 );
 DoctorStack.navigationOptions = { title: 'Doctor' };
-DoctorStack.path = '';
 // Here ends Doctor Screen
 
 

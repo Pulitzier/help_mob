@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { doctors } from '../constants/mock';
+import Header from "../components/Header";
 
 export default class CenterScreen extends Component {
   state = {
@@ -27,10 +28,10 @@ export default class CenterScreen extends Component {
 
   render() {
     const medCenter = this.props.navigation.getParam("itemProps");
-    console.log(this.state);
     const { type } = this.state;
     return (
       <View>
+        <Header />
         <View style={styles.centrCardStyles}>
           <Text>{medCenter.title}</Text>
           <Text style={styles.centrType}>{medCenter.type}</Text>
@@ -51,7 +52,7 @@ export default class CenterScreen extends Component {
             )
           }
         </ScrollView>
-        <ScrollView horizontal={false}>
+        <ScrollView style={styles.doctorsListContainer}>
           <View>
             {
               doctors
@@ -63,7 +64,7 @@ export default class CenterScreen extends Component {
                   <TouchableOpacity
                     onPress={() => this.handleChooseDoctor(doctor)}
                     key={doctor.fullName}
-                    style={styles.buttonStyle}
+                    style={styles.doctorCardWrapper}
                   >
                     <View style={styles.doctorCardStyles} key={doctor.fullName}>
                       <Text style={styles.titleStyles}>{doctor.fullName}</Text>
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 10,
     paddingHorizontal: 20,
+    maxHeight: 320,
   },
   horizontalScroll: {
     paddingBottom: 10,
@@ -117,7 +119,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  buttonStyle: {
+  doctorsListContainer: {
+    flexGrow: 1,
+    bottom: 0,
+  },
+  doctorCardWrapper: {
     marginVertical: 0,
     marginHorizontal: 0,
     paddingVertical: 0,
