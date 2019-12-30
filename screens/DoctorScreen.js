@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar, Badge, Button } from 'react-native-elements';
+import moment from 'moment';
 import Header from "../components/Header";
+import DoctorsCalendar from '../components/DoctorsCalendar';
 
 export default class DoctorScreen extends Component {
   render() {
@@ -15,8 +17,7 @@ export default class DoctorScreen extends Component {
           <Text>Степень: {doctor.degree}</Text>
           <Text>Категория: {doctor.category}</Text>
         </View>
-
-
+        <DoctorsCalendar />
       </View>
     );
   }
