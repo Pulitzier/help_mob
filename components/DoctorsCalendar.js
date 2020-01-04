@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { Calendar } from 'react-native-calendars';
-import { View } from "react-native";
 
 export default class DoctorsCalendar extends Component {
   constructor(props) {

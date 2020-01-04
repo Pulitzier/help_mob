@@ -4,20 +4,23 @@ import { Avatar, Badge, Button } from 'react-native-elements';
 import moment from 'moment';
 import Header from "../components/Header";
 import DoctorsCalendar from '../components/DoctorsCalendar';
+import DoctorTimePicker from '../components/DoctorTimePicker';
 
 export default class DoctorScreen extends Component {
+
   render() {
     const doctor = this.props.navigation.getParam("doctorProps");
     return (
       <View>
-        <Header />
+        <Header/>
         <View style={styles.doctorCardStyles}>
           <Text>{doctor.fullName}</Text>
           <Text>Стаж работы: {doctor.experience}</Text>
           <Text>Степень: {doctor.degree}</Text>
           <Text>Категория: {doctor.category}</Text>
         </View>
-        <DoctorsCalendar />
+        <DoctorsCalendar/>
+        <DoctorTimePicker/>
       </View>
     );
   }
