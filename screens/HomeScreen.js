@@ -16,7 +16,7 @@ export default class HomeScreen extends Component {
   handleChooseCenter = (item) => {
     this.props.navigation.navigate(
       'Center',
-      { itemProps: item }
+      { center: item }
     );
   }
 
@@ -38,7 +38,7 @@ export default class HomeScreen extends Component {
                 >
                   <View style={styles.centrCardStyles} key={item.title}>
                     <Text style={styles.titleStyles}>{item.title}</Text>
-                    <Text style={styles.centrType}>{item.type}</Text>
+                    <Text style={styles.centerType}>{item.type}</Text>
                     <Text>
                       <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.adress}
                     </Text>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  centrType: {
+  centerType: {
     color: "#ae020b"
   },
   buttonStyle: {

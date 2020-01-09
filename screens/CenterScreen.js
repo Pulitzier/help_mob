@@ -15,10 +15,10 @@ export default class CenterScreen extends Component {
     type: 'All'
   }
 
-  handleChooseDoctor = (doctor) => {
+  handleChooseDoctor = (item) => {
     this.props.navigation.navigate(
       'Doctor',
-      { doctorProps: doctor }
+      { doctor: item }
     );
   }
 
@@ -27,7 +27,7 @@ export default class CenterScreen extends Component {
   getDegree = (doctor) => (doctor.degree.length !== 0) ? doctor.degree : "Не указано";
 
   render() {
-    const medCenter = this.props.navigation.getParam("itemProps");
+    const medCenter = this.props.navigation.getParam("center");
     const { type } = this.state;
     return (
       <View>

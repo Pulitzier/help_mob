@@ -23,6 +23,7 @@ export default class DoctorTimePicker extends Component {
   }
 
   onConfirm(hour, minute) {
+    this.props.setTime(`${hour}:${minute}`);
     this.setState({ time: `${hour}:${minute}` });
     this.TimePicker.close();
   }

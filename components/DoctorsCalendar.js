@@ -19,6 +19,7 @@ export default class DoctorsCalendar extends Component {
     if (mDates.find(item => item === day.dateString)) {
       newDates = mDates.filter(item => item !== day.dateString)
     }
+    this.props.setDate(newDates);
     this.setState({ mDates: newDates });
   }
 

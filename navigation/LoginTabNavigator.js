@@ -10,6 +10,7 @@ import {
   StyleSheet,
   TextInput,
   Dimensions,
+  AsyncStorage,
 } from "react-native";
 
 const { width, height } = Dimensions.get('window');
@@ -18,15 +19,44 @@ const loginBackground = "https://www.devostock.com/static11/preview2/stock-photo
 
 const isAndroid = () => (Platform.OS === 'ios');
 
-const LoginScreen = (props) => {
-  const renderButton = (props) => (
-    <TouchableOpacity style={styles.loginButtonStyle} onPress={() => props.navigation.navigate('Main')}>
+const saveUserSession = async (user) => {
+  try {
+    if (user) AsyncStorage.setItem('@user', JSON.stringify(user));
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export default class LoginScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {
+        phone: '',
+        password: '',
+        documentId: '',
+      }
+    };
+  }
+
+  renderButton = () => (
+    <TouchableOpacity style={styles.loginButtonStyle} onPress={() => {
+      saveUserSession(this.state.user);
+      this.props.navigation.navigate('Main');
+    }}>
       <Text style={styles.loginButtonTextStyle}>LOGIN</Text>
     </TouchableOpacity>
-  );
+  )
 
-  const renderInput = (props) => {
+  handleTypeText = (type, text) => {
+    this.setState((prev, next) => ({
+      user: Object.assign(prev.user, { [type]: text }),
+    }));
+  }
+
+  renderInput = (props) => {
     const {
+      type,
       placeholder,
       styles: {
         textContainer,
@@ -40,57 +70,59 @@ const LoginScreen = (props) => {
     } = props;
     return (
       <View style={styles.inputContainer} key={title}>
-          <View style={textContainer}>
-            <Text style={titleStyle}>{title}</Text>
-            <TextInput
-              placeholder={placeholder}
-              placeholderTextColor={placeholderColor}
-              selectionColor={selectionColor}
-              onChangeText={onChangeText}
-              style={textStyle}
-            />
+        <View style={textContainer}>
+          <Text style={titleStyle}>{title}</Text>
+          <TextInput
+            placeholder={placeholder}
+            placeholderTextColor={placeholderColor}
+            selectionColor={selectionColor}
+            onChangeText={text => this.handleTypeText(type, text)}
+            style={textStyle}
+          />
         </View>
       </View>
     )
-  };
+  }
 
-  return (
-    <KeyboardAvoidingView behavior="position">
-      <View style={styles.container}>
-        <ImageBackground
-          borderRadius={24}
-          resizeMode="cover"
-          style={styles.imagebackgroundStyle}
-          source={{ uri: loginBackground }}
-        >
-          <View style={styles.blackoverlay}>
-            <SafeAreaView style={styles.safeAreaViewStyle}>
-              <View style={styles.bottomContainer}>
-                {
-                  [
-                    { title: "Номер договора", placeholder: "Case Num." },
-                    { title: "Ваш телефон", placeholder: "Phone" },
-                    { title: "Пароль", placeholder: "Password" }
-                  ]
-                    .map(item => renderInput({
-                      placeholder: item.placeholder,
-                      styles: {
-                        ...styles,
-                        placeholderTextColor: "#ccc",
-                        selectionColor: "#757575",
-                      },
-                      title: item.title,
-                      onChangeText: () => console.log('should be changed'),
-                    }))
-                }
-              </View>
-            </SafeAreaView>
-          </View>
-        </ImageBackground>
-        {renderButton(props)}
-      </View>
-    </KeyboardAvoidingView>
-  );
+  render() {
+    return (
+      <KeyboardAvoidingView behavior="position">
+        <View style={styles.container}>
+          <ImageBackground
+            borderRadius={24}
+            resizeMode="cover"
+            style={styles.imageBackgroundStyle}
+            source={{ uri: loginBackground }}
+          >
+            <View style={styles.blackoverlay}>
+              <SafeAreaView style={styles.safeAreaViewStyle}>
+                <View style={styles.bottomContainer}>
+                  {
+                    [
+                      { title: "Номер договора", placeholder: "Case Num.", type: 'documentId' },
+                      { title: "Ваш телефон", placeholder: "Phone", type: 'phone' },
+                      { title: "Пароль", placeholder: "Password", type: 'password' }
+                    ]
+                      .map(item => this.renderInput({
+                        type: item.type,
+                        placeholder: item.placeholder,
+                        styles: {
+                          ...styles,
+                          placeholderTextColor: "#ccc",
+                          selectionColor: "#757575",
+                        },
+                        title: item.title,
+                      }))
+                  }
+                </View>
+              </SafeAreaView>
+            </View>
+          </ImageBackground>
+          {this.renderButton()}
+        </View>
+      </KeyboardAvoidingView>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -133,7 +165,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "800",
   },
-  imagebackgroundStyle: {
+  imageBackgroundStyle: {
     width,
     flex: 1,
     zIndex: -1,
@@ -173,5 +205,3 @@ const styles = StyleSheet.create({
     height: isAndroid() ? 35 : null
   },
 });
-
-export default LoginScreen;
