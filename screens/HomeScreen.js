@@ -18,48 +18,36 @@ export default class HomeScreen extends Component {
       'Center',
       { center: item }
     );
-  }
+  };
 
   render() {
     return (
       <View style={styles.container}>
         <Header/>
-        <View style={styles.container}>
-          <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.contentContainer}
-          >
-            {
-              medCentrs.map((item) => (
-                <TouchableOpacity
-                  onPress={() => this.handleChooseCenter(item)}
-                  key={item.title}
-                  style={styles.buttonStyle}
-                >
-                  <View style={styles.centrCardStyles} key={item.title}>
-                    <Text style={styles.titleStyles}>{item.title}</Text>
-                    <Text style={styles.centerType}>{item.type}</Text>
-                    <Text>
-                      <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.adress}
-                    </Text>
-                    <Text><Icon name="clock-o" size={15} color="blue"/> {item.workingHours}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))
-            }
-          </ScrollView>
-        </View>
+        <ScrollView>
+          {
+            medCentrs.map((item) => (
+              <TouchableOpacity
+                onPress={() => this.handleChooseCenter(item)}
+                key={item.title}
+                style={styles.buttonStyle}
+              >
+                <View style={styles.centrCardStyles} key={item.title}>
+                  <Text style={styles.titleStyles}>{item.title}</Text>
+                  <Text style={styles.centerType}>{item.type}</Text>
+                  <Text>
+                    <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.adress}
+                  </Text>
+                  <Text><Icon name="clock-o" size={15} color="blue"/> {item.workingHours}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
+          }
+        </ScrollView>
       </View>
     );
   }
 }
-
-function handleLearnMorePress() {
-  WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/workflow/development-mode/'
-  );
-}
-
 function handleHelpPress() {
   WebBrowser.openBrowserAsync(
     'https://docs.expo.io/versions/latest/workflow/up-and-running/#cant-see-your-changes'

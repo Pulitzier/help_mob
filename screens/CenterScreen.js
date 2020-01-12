@@ -13,14 +13,14 @@ import Header from "../components/Header";
 export default class CenterScreen extends Component {
   state = {
     type: 'All'
-  }
+  };
 
   handleChooseDoctor = (item) => {
     this.props.navigation.navigate(
       'Doctor',
       { doctor: item }
     );
-  }
+  };
 
   filter = (type) => this.setState({ type });
 
@@ -30,7 +30,7 @@ export default class CenterScreen extends Component {
     const medCenter = this.props.navigation.getParam("center");
     const { type } = this.state;
     return (
-      <View>
+      <View style={styles.container}>
         <Header />
         <View style={styles.centrCardStyles}>
           <Text>{medCenter.title}</Text>
@@ -38,7 +38,11 @@ export default class CenterScreen extends Component {
           <Text><Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {medCenter.adress}</Text>
           <Text><Icon name="clock-o" size={15} color="blue"/> {medCenter.workingHours}</Text>
         </View>
-        <ScrollView horizontal={true} style={styles.horizontalScroll}>
+        <ScrollView
+          horizontal={true}
+          style={styles.horizontalScroll}
+          contentContainerStyle={styles.contentContainer}
+        >
           <TouchableOpacity onPress={() => this.filter('All')} style={styles.filterStyles}>
             <Text style={styles.filterText}>All</Text>
           </TouchableOpacity>
@@ -83,6 +87,9 @@ export default class CenterScreen extends Component {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   centrCardStyles: {
     backgroundColor: '#fff',
     paddingVertical: 10,
@@ -90,19 +97,24 @@ const styles = StyleSheet.create({
     maxHeight: 320,
   },
   horizontalScroll: {
+    height: 120,
     paddingBottom: 10,
+  },
+  contentContainer: {
+    alignItems: 'center',
   },
   filterStyles: {
     backgroundColor: 'gray',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-    marginHorizontal: 5,
+    maxHeight: 150,
+    margin: 5,
+    flex: 1,
     alignContent: 'center',
   },
   filterText: {
     color: '#fff',
-    top: -3,
   },
   centrType: {
     color: '#ae020b',

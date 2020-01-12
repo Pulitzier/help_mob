@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {
-  Picker,
   View,
   Text,
   StyleSheet,
-  Platform,
   TouchableOpacity,
 } from 'react-native';
 import TimePicker from "react-native-24h-timepicker";
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     paddingVertical: 10,
     paddingHorizontal: 25,
-    marginVertical: 40,
+    marginVertical: 10,
     justifyContent: 'center',
   },
   timeBoardText: {
