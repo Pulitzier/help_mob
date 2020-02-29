@@ -3,14 +3,14 @@
     "name": "Default non-commercial app for testing purpose only",
     "slug": "help",
     "privacy": "public",
-    "owner": "densta22@gmail.com",
+    "owner": "densta",
     "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -25,7 +25,13 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.incecompany.ince",
+      "buildNumber": "1.0.1"
+    },
+    "android": {
+      "package": "com.incecompany.ince",
+      "versionCode": 2
     }
   }
 }
