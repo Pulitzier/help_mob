@@ -11,11 +11,13 @@ import {
   TextInput,
   Dimensions,
   AsyncStorage,
+  ActivityIndicator,
 } from "react-native";
 
 const { width, height } = Dimensions.get('window');
 
-const loginBackground = "https://www.devostock.com/static11/preview2/stock-photo-devostock-nature-wood-190932-4kjpeg-152395.jpg";
+const loginBackground = "https://dev-storage-box.s3.eu-central-1.amazonaws.com/mountains-of-chamonix-alps-1579349462rwJ.jpg";
+const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage';
 
 const isAndroid = () => (Platform.OS === 'ios');
 
@@ -25,12 +27,13 @@ const saveUserSession = async (user) => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: false,
       user: {
         phone: '',
         password: '',
@@ -39,20 +42,50 @@ export default class LoginScreen extends React.Component {
     };
   }
 
+  sendRequest = async () => {
+    if (this.state.user && this.state.user.phone) {
+      const params = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: this.state.user.phone }),
+      };
+      try {
+        let response = await fetch(bUrl, params);
+        let responseJson = await response.json();
+        console.log(responseJson);
+        if (responseJson.requested) return responseJson.requested;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+  };
+
+  handleLoginSend = async () => {
+    this.setState({ isLoading: true });
+    const user = await this.sendRequest();
+    const oldUser = this.state.user;
+    if (user) {
+      await this.setState({ isLoading: false, user: Object.assign({}, oldUser, { full: user }) });
+      await saveUserSession(this.state.user);
+      await this.props.navigation.navigate('Main');
+    }
+  };
+
   renderButton = () => (
-    <TouchableOpacity style={styles.loginButtonStyle} onPress={() => {
-      saveUserSession(this.state.user);
-      this.props.navigation.navigate('Main');
-    }}>
+    <TouchableOpacity
+      style={styles.loginButtonStyle}
+      onPress={this.handleLoginSend}
+    >
       <Text style={styles.loginButtonTextStyle}>LOGIN</Text>
     </TouchableOpacity>
-  )
+  );
 
   handleTypeText = (type, text) => {
     this.setState((prev, next) => ({
       user: Object.assign(prev.user, { [type]: text }),
     }));
-  }
+  };
 
   renderInput = (props) => {
     const {
@@ -66,7 +99,6 @@ export default class LoginScreen extends React.Component {
         textStyle,
       },
       title,
-      onChangeText,
     } = props;
     return (
       <View style={styles.inputContainer} key={title}>
@@ -82,50 +114,68 @@ export default class LoginScreen extends React.Component {
         </View>
       </View>
     )
-  }
+  };
 
   render() {
-    return (
-      <KeyboardAvoidingView behavior="position">
-        <View style={styles.container}>
-          <ImageBackground
-            borderRadius={24}
-            resizeMode="cover"
-            style={styles.imageBackgroundStyle}
-            source={{ uri: loginBackground }}
-          >
-            <View style={styles.blackoverlay}>
-              <SafeAreaView style={styles.safeAreaViewStyle}>
-                <View style={styles.bottomContainer}>
-                  {
-                    [
-                      { title: "Номер договора", placeholder: "Case Num.", type: 'documentId' },
-                      { title: "Ваш телефон", placeholder: "Phone", type: 'phone' },
-                      { title: "Пароль", placeholder: "Password", type: 'password' }
-                    ]
-                      .map(item => this.renderInput({
-                        type: item.type,
-                        placeholder: item.placeholder,
-                        styles: {
-                          ...styles,
-                          placeholderTextColor: "#ccc",
-                          selectionColor: "#757575",
-                        },
-                        title: item.title,
-                      }))
-                  }
-                </View>
-              </SafeAreaView>
-            </View>
-          </ImageBackground>
-          {this.renderButton()}
+    if (this.state.isLoading) {
+      return (
+        <View style={styles.shadow}>
+          <ActivityIndicator size="large" color="#0000ff"/>
         </View>
-      </KeyboardAvoidingView>
-    );
+      );
+    } else {
+      return (
+        <KeyboardAvoidingView behavior="position">
+          <View style={styles.container}>
+            <ImageBackground
+              borderRadius={24}
+              resizeMode="cover"
+              style={styles.imageBackgroundStyle}
+              source={{
+                uri: loginBackground,
+                cache: 'only-if-cached',
+              }}
+            >
+              <View style={styles.blackoverlay}>
+                <SafeAreaView style={styles.safeAreaViewStyle}>
+                  <View style={styles.bottomContainer}>
+                    {
+                      [
+                        { title: "Ваш телефон", placeholder: "Phone", type: 'phone' },
+                        { title: "Пароль", placeholder: "Password", type: 'password' }
+                      ]
+                        .map(item => this.renderInput({
+                          type: item.type,
+                          placeholder: item.placeholder,
+                          styles: {
+                            ...styles,
+                            placeholderTextColor: "#ccc",
+                            selectionColor: "#757575",
+                          },
+                          title: item.title,
+                        }))
+                    }
+                  </View>
+                </SafeAreaView>
+              </View>
+            </ImageBackground>
+            {this.renderButton()}
+          </View>
+        </KeyboardAvoidingView>
+      );
+    }
   }
 };
 
 const styles = StyleSheet.create({
+  shadow: {
+    width,
+    height,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    display: 'flex',
+    padding: 10
+  },
   container: {
     width,
     height,
@@ -133,7 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#282828"
   },
   bottomContainer: {
-    height: 265,
+    height: 'auto',
+    minHeight: 100,
     bottom: 100,
     backgroundColor: "rgba(255,255,255,0.45)",
     borderRadius: 24,
