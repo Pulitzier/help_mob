@@ -12,7 +12,9 @@ import {
   Dimensions,
   AsyncStorage,
   ActivityIndicator,
+  Alert
 } from "react-native";
+import PhoneInput from 'react-native-phone-input';
 
 const { width, height } = Dimensions.get('window');
 
@@ -42,48 +44,79 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  sendRequest = async () => {
-    if (this.state.user && this.state.user.phone) {
-      const params = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: this.state.user.phone }),
-      };
-      try {
-        let response = await fetch(bUrl, params);
-        let responseJson = await response.json();
-        console.log(responseJson);
-        if (responseJson.requested) return responseJson.requested;
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
+  componentDidMount() {
+    this.phone.focus()
+  }
+
+  sendRequest = async (phone) => {
+    const params = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone }),
+    };
+    try {
+      let response = await fetch(bUrl, params);
+      let responseJson = await response.json();
+      console.log(responseJson);
+      if (responseJson.requested) return responseJson.requested;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   };
 
   handleLoginSend = async () => {
-    this.setState({ isLoading: true });
-    const user = await this.sendRequest();
-    const oldUser = this.state.user;
-    if (user) {
-      await this.setState({ isLoading: false, user: Object.assign({}, oldUser, { full: user }) });
-      await saveUserSession(user);
-      await this.props.navigation.navigate('Main');
+    const phone = this.phone.getValue();
+    if (phone.length === 13 && phone[0] === '+') {
+      this.setState({ isLoading: true });
+      const user = await this.sendRequest(phone);
+      if (user) {
+        await this.setState({ isLoading: false, user });
+        await saveUserSession(user);
+        await this.props.navigation.navigate('Main');
+      } else {
+        await this.setState({ isLoading: false });
+        Alert.alert(
+          'Ошибка!',
+          'Такой номер телефона не существует',
+          [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+      }
     } else {
-      await this.setState({ isLoading: false });
+      Alert.alert(
+        'Неверный номер',
+        'Проверьте, пожалуйста, номер телефона',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
     }
   };
 
   renderButton = () => (
     <TouchableOpacity
       style={styles.loginButtonStyle}
-      onPress={this.handleLoginSend}
+      onPress={() => this.handleLoginSend()}
     >
       <Text style={styles.loginButtonTextStyle}>LOGIN</Text>
     </TouchableOpacity>
   );
 
-  handleTypeText = (type, text) => {
+  handleTypeText = (text, type = 'phone') => {
     this.setState((prev, next) => ({
       user: Object.assign(prev.user, { [type]: text }),
     }));
@@ -110,7 +143,7 @@ export default class LoginScreen extends React.Component {
             placeholder={placeholder}
             placeholderTextColor={placeholderColor}
             selectionColor={selectionColor}
-            onChangeText={text => this.handleTypeText(type, text)}
+            onChangeText={text => this.handleTypeText(text, type)}
             style={textStyle}
           />
         </View>
@@ -138,24 +171,21 @@ export default class LoginScreen extends React.Component {
                 cache: 'only-if-cached',
               }}
             >
-              <View style={styles.blackoverlay}>
+              <View style={styles.blackOverlay}>
                 <SafeAreaView style={styles.safeAreaViewStyle}>
                   <View style={styles.bottomContainer}>
-                    {
-                      [
-                        { title: "Ваш телефон", placeholder: "Phone", type: 'phone' }
-                      ]
-                        .map(item => this.renderInput({
-                          type: item.type,
-                          placeholder: item.placeholder,
-                          styles: {
-                            ...styles,
-                            placeholderTextColor: "#ccc",
-                            selectionColor: "#757575",
-                          },
-                          title: item.title,
-                        }))
-                    }
+                    <View style={styles.inputContainer} key='Ваш телефон'>
+                      <View style={styles.textContainer}>
+                        <Text style={styles.titleStyle}>Ваш телефон</Text>
+                        <PhoneInput
+                          ref={(node) => { this.phone = node; }}
+                          initialCountry='by'
+                          value='+375'
+                          style={styles.textStyle}
+                          onPressFlag={() => {}}
+                        />
+                      </View>
+                    </View>
                   </View>
                 </SafeAreaView>
               </View>
@@ -224,7 +254,7 @@ const styles = StyleSheet.create({
     height: height * 0.9,
     ...StyleSheet.absoluteFillObject
   },
-  blackoverlay: {
+  blackOverlay: {
     width,
     height,
     backgroundColor: "rgba(0,0,0,0.1)"
