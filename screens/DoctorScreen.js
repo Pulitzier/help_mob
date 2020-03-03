@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
 import { Button } from 'react-native-elements';
+import moment from 'moment';
 import Header from "../components/Header";
 import DoctorsCalendar from '../components/DoctorsCalendar';
 import DoctorTimePicker from '../components/DoctorTimePicker';
@@ -41,8 +42,10 @@ const saveObj = async (obj) => {
 };
 
 const DoctorScreen = (props) => {
-  const [ time, setTime ] = useState(null);
-  const [ date, setDate ] = useState(null);
+  const curTime = moment().format('HH:MM');
+  const curDate = moment().format('YYYY-MM-DD');
+  const [ time, setTime ] = useState(curTime);
+  const [ date, setDate ] = useState(curDate);
 
   const doctor = props.navigation.getParam("doctor");
 
@@ -56,8 +59,8 @@ const DoctorScreen = (props) => {
         <Text>Категория: {doctor.category}</Text>
       </View>
       <View style={styles.subContainer}>
-        <DoctorsCalendar setDate={setDate}/>
-        <DoctorTimePicker setTime={setTime}/>
+        <DoctorsCalendar setDate={setDate} curDate={curDate}/>
+        <DoctorTimePicker setTime={setTime} curTime={curTime}/>
         <View style={styles.buttonWrapper}>
           <View style={styles.buttonStyles}>
             <Button

@@ -11,8 +11,14 @@ export default class DoctorTimePicker extends Component {
   constructor() {
     super();
     this.state = {
-      time: '00:00',
+      time: ''
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      time: this.props.curTime.toString(),
+    })
   }
 
   onCancel() {
@@ -26,6 +32,7 @@ export default class DoctorTimePicker extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
       <View style={styles.container}>
         <TouchableOpacity
@@ -35,10 +42,10 @@ export default class DoctorTimePicker extends Component {
           <Text style={styles.timeBoardText}>{this.state.time}</Text>
         </TouchableOpacity>
         <TimePicker
-          ref={ref => {
-            this.TimePicker = ref;
-          }}
+          ref={ref => this.TimePicker = ref}
           onCancel={() => this.onCancel()}
+          selectedHour={this.state.time.split(':')[0]}
+          selectedMinute={this.state.time.split(':')[1]}
           onConfirm={(hour, minute) => this.onConfirm(hour, minute)}
         />
       </View>

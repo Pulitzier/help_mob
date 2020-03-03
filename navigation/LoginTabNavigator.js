@@ -17,7 +17,7 @@ import {
 const { width, height } = Dimensions.get('window');
 
 const loginBackground = "https://dev-storage-box.s3.eu-central-1.amazonaws.com/mountains-of-chamonix-alps-1579349462rwJ.jpg";
-const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage';
+const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/fetch';
 
 const isAndroid = () => (Platform.OS === 'ios');
 
@@ -67,8 +67,10 @@ export default class LoginScreen extends React.Component {
     const oldUser = this.state.user;
     if (user) {
       await this.setState({ isLoading: false, user: Object.assign({}, oldUser, { full: user }) });
-      await saveUserSession(this.state.user);
+      await saveUserSession(user);
       await this.props.navigation.navigate('Main');
+    } else {
+      await this.setState({ isLoading: false });
     }
   };
 
@@ -141,8 +143,7 @@ export default class LoginScreen extends React.Component {
                   <View style={styles.bottomContainer}>
                     {
                       [
-                        { title: "Ваш телефон", placeholder: "Phone", type: 'phone' },
-                        { title: "Пароль", placeholder: "Password", type: 'password' }
+                        { title: "Ваш телефон", placeholder: "Phone", type: 'phone' }
                       ]
                         .map(item => this.renderInput({
                           type: item.type,
