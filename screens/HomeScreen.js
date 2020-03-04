@@ -36,7 +36,7 @@ export default class HomeScreen extends Component {
                   <Text style={styles.titleStyles}>{item.title}</Text>
                   <Text style={styles.centerType}>{item.type}</Text>
                   <Text>
-                    <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.adress}
+                    <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.address}
                   </Text>
                   <Text><Icon name="clock-o" size={15} color="blue"/> {item.workingHours}</Text>
                 </View>
