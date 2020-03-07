@@ -44,10 +44,6 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.phone.focus()
-  }
-
   sendRequest = async (phone) => {
     const params = {
       method: 'POST',
@@ -162,34 +158,22 @@ export default class LoginScreen extends React.Component {
       return (
         <KeyboardAvoidingView behavior="position">
           <View style={styles.container}>
-            <ImageBackground
-              borderRadius={24}
-              resizeMode="cover"
-              style={styles.imageBackgroundStyle}
-              source={{
-                uri: loginBackground,
-                cache: 'only-if-cached',
-              }}
-            >
-              <View style={styles.blackOverlay}>
-                <SafeAreaView style={styles.safeAreaViewStyle}>
-                  <View style={styles.bottomContainer}>
-                    <View style={styles.inputContainer} key='Ваш телефон'>
-                      <View style={styles.textContainer}>
-                        <Text style={styles.titleStyle}>Ваш телефон</Text>
-                        <PhoneInput
-                          ref={(node) => { this.phone = node; }}
-                          initialCountry='by'
-                          value='+375'
-                          style={styles.textStyle}
-                          onPressFlag={() => {}}
-                        />
-                      </View>
-                    </View>
+            <SafeAreaView style={styles.safeAreaViewStyle}>
+              <View style={styles.bottomContainer}>
+                <View style={styles.inputContainer} key='Ваш телефон'>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.titleStyle}>Ваш телефон</Text>
+                    <PhoneInput
+                      ref={(node) => {this.phone = node;}}
+                      initialCountry='by'
+                      value='+375'
+                      style={styles.textStyle}
+                      onPressFlag={() => {}}
+                    />
                   </View>
-                </SafeAreaView>
+                </View>
               </View>
-            </ImageBackground>
+            </SafeAreaView>
             {this.renderButton()}
           </View>
         </KeyboardAvoidingView>
@@ -211,17 +195,17 @@ const styles = StyleSheet.create({
     width,
     height,
     marginBottom: 32,
-    backgroundColor: "#282828"
+    backgroundColor: "rgba(0,0,0,0.1)",
+    alignItems: 'center',
+    justifyContent: "center"
   },
   bottomContainer: {
     height: 'auto',
     minHeight: 100,
-    bottom: 100,
     backgroundColor: "rgba(255,255,255,0.45)",
     borderRadius: 24,
     width: width * 0.9,
     alignSelf: "center",
-    position: "absolute",
     paddingVertical: 8,
   },
   inputContainer: {
@@ -234,33 +218,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   loginButtonStyle: {
-    left: 0,
-    right: 0,
-    bottom: 10,
+    width: 150,
     height: 50,
-    position: "absolute",
+    margin: 'auto',
+    marginTop: 20,
+    borderRadius: 24,
+    backgroundColor: "#282828",
     alignItems: "center",
     justifyContent: "center"
   },
   loginButtonTextStyle: {
     color: "white",
-    fontSize: 15,
-    fontWeight: "800",
-  },
-  imageBackgroundStyle: {
-    width,
-    flex: 1,
-    zIndex: -1,
-    height: height * 0.9,
-    ...StyleSheet.absoluteFillObject
-  },
-  blackOverlay: {
-    width,
-    height,
-    backgroundColor: "rgba(0,0,0,0.1)"
-  },
-  safeAreaViewStyle: {
-    flex: 1
+    fontSize: 16,
+    fontWeight: "800"
   },
   textContainer: {
     width: "90%",
