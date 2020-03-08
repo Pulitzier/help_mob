@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { StyleSheet, Text, View, AsyncStorage, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import moment from 'moment';
 import Header from "../components/Header";
@@ -35,10 +35,54 @@ const saveObj = async (obj) => {
     let response = await fetch(bUrl, params);
     let responseJson = await response.json();
     console.log(responseJson);
+    return responseJson;
   } catch (error) {
     console.error(error);
+    return error;
   }
-  return null;
+};
+
+const handleClick = async (data) => {
+  const response = await saveObj(data);
+  if (response.error) {
+    console.log(response);
+    if (response.error.message) {
+      Alert.alert(
+        'Ошибка!',
+        `${response.error.message}`,
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+    else {
+      Alert.alert(
+        'Ошибка!',
+        'Что-то пошло не так',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false },
+      );
+    }
+  }
+  else {
+    Alert.alert(
+      null,
+      'Ваш запрос успешно сохранен!',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+
 };
 
 const DoctorScreen = (props) => {
@@ -65,7 +109,7 @@ const DoctorScreen = (props) => {
           <View style={styles.buttonStyles}>
             <Button
               title='Save Data'
-              onPress={() => saveObj({ time, date, doctor })}
+              onPress={() => handleClick({ time, date, doctor })}
             />
           </View>
         </View>
