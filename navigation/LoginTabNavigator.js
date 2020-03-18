@@ -15,11 +15,9 @@ import {
   Alert
 } from "react-native";
 import PhoneInput from 'react-native-phone-input';
+import users from '../constants/mock-users';
 
 const { width, height } = Dimensions.get('window');
-
-const loginBackground = "https://dev-storage-box.s3.eu-central-1.amazonaws.com/mountains-of-chamonix-alps-1579349462rwJ.jpg";
-const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/fetch';
 
 const isAndroid = () => (Platform.OS === 'ios');
 
@@ -44,22 +42,7 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  sendRequest = async (phone) => {
-    const params = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone }),
-    };
-    try {
-      let response = await fetch(bUrl, params);
-      let responseJson = await response.json();
-      console.log(responseJson);
-      if (responseJson.requested) return responseJson.requested;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
+  sendRequest = async (phone) => users.filter(item => item.phone === phone);
 
   handleLoginSend = async () => {
     const phone = this.phone.getValue();
@@ -78,10 +61,10 @@ export default class LoginScreen extends React.Component {
           [
             {
               text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
+              onPress: () => {},
               style: 'cancel',
             },
-            { text: 'OK', onPress: () => console.log('OK Pressed') },
+            { text: 'OK', onPress: () => {} },
           ],
           { cancelable: false },
         );
@@ -93,10 +76,10 @@ export default class LoginScreen extends React.Component {
         [
           {
             text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
+            onPress: () => {},
             style: 'cancel',
           },
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+          { text: 'OK', onPress: () => {} },
         ],
         { cancelable: false },
       );
