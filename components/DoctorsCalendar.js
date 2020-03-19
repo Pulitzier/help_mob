@@ -30,7 +30,6 @@ export default class DoctorsCalendar extends Component {
 
   render() {
     const { mDates, dateSetting } = this.state;
-    console.log(this.props);
     return (
       <Calendar
         onDayPress={this.handleDayPress}
