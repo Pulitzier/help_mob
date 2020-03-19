@@ -3,8 +3,7 @@ import { StyleSheet, Text, View, AsyncStorage, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import moment from 'moment';
 import Header from "../components/Header";
-import DoctorsCalendar from '../components/DoctorsCalendar';
-import DoctorTimePicker from '../components/DoctorTimePicker';
+import DoctorScreenSection from '../components/DoctorScreenSection';
 
 const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/save';
 
@@ -34,7 +33,6 @@ const saveObj = async (obj) => {
   try {
     let response = await fetch(bUrl, params);
     let responseJson = await response.json();
-    console.log(responseJson);
     return responseJson;
   } catch (error) {
     console.error(error);
@@ -45,13 +43,12 @@ const saveObj = async (obj) => {
 const handleClick = async (data) => {
   const response = await saveObj(data);
   if (response.error) {
-    console.log(response);
     if (response.error.message) {
       Alert.alert(
         'Ошибка!',
         `${response.error.message}`,
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+          { text: 'OK', onPress: () => {} },
         ],
         { cancelable: false },
       );
@@ -61,7 +58,7 @@ const handleClick = async (data) => {
         'Ошибка!',
         'Что-то пошло не так',
         [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
+          { text: 'OK', onPress: () => {} },
         ],
         { cancelable: false },
       );
@@ -74,16 +71,22 @@ const handleClick = async (data) => {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () => {},
           style: 'cancel',
         },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
+        { text: 'OK', onPress: () => {} },
       ],
       { cancelable: false },
     );
   }
-
 };
+
+const formatProfArea = (items) => {
+  let str = '';
+  if (items.length === 1) str = items[0][0].toUpperCase() + items[0].slice(1);
+  else str = items.map((item) => item[0].toUpperCase() + item.slice(1)).join(', ');
+  return str;
+}
 
 const DoctorScreen = (props) => {
   const curTime = moment().format('HH:MM');
@@ -91,29 +94,33 @@ const DoctorScreen = (props) => {
   const [ time, setTime ] = useState(curTime);
   const [ date, setDate ] = useState(curDate);
 
+
   const doctor = props.navigation.getParam("doctor");
+  console.log(formatProfArea(doctor.profArea), doctor);
 
   return (
     <View style={styles.container}>
       <Header/>
       <View style={styles.doctorCardStyles}>
-        <Text>{doctor.fullName}</Text>
-        <Text>Стаж работы: {doctor.experience}</Text>
-        <Text>Степень: {doctor.degree}</Text>
-        <Text>Категория: {doctor.category}</Text>
+        <Text style={styles.doctorFullName}>{doctor.fullName}</Text>
+        {
+          doctor.profArea &&
+          <Text>{formatProfArea(doctor.profArea)}</Text>
+        }
+        {
+          !!doctor.experience &&
+          <Text>Стаж работы: {doctor.experience}</Text>
+        }
+        {
+          !!doctor.degree &&
+          <Text>Степень: {doctor.degree}</Text>
+        }
+        {
+          !!doctor.category &&
+          <Text>Категория: {doctor.category}</Text>
+        }
       </View>
-      <View style={styles.subContainer}>
-        <DoctorsCalendar setDate={setDate} curDate={curDate}/>
-        <DoctorTimePicker setTime={setTime} curTime={curTime}/>
-        <View style={styles.buttonWrapper}>
-          <View style={styles.buttonStyles}>
-            <Button
-              title='Save Data'
-              onPress={() => handleClick({ time, date, doctor })}
-            />
-          </View>
-        </View>
-      </View>
+      <DoctorScreenSection doctor={doctor} />
     </View>
   );
 };
@@ -125,6 +132,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     flex: 1,
   },
+  doctorFullName: {
+    fontWeight: 'bold',
+  },
   doctorCardStyles: {
     backgroundColor: '#fff',
     paddingVertical: 10,
@@ -133,19 +143,5 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderBottomWidth: 1,
     borderColor: 'gray',
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-  },
-  subContainer: {
-    justifyContent: 'space-between',
-    flex: 1,
-    marginBottom: 10,
-    width: "100%"
-  },
-  buttonStyles: {
-    color: 'blue',
-    borderRadius: 5,
-    width: 150,
   }
 });
