@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Header from "../components/Header";
+import throttle from 'lodash/throttle';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -82,9 +84,10 @@ export default class HomeScreen extends Component {
   }
 
   render() {
+    const { medCentrs, allMedCentrs } = this.state;
     return (
       <View style={styles.container}>
-        <Header/>
+        <Header searchCenters={throttle(this.handleSearch, 1000)}/>
         <ScrollView>
           {
             !this.state.centersIsReady &&
