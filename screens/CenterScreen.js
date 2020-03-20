@@ -17,7 +17,8 @@ const { width, height } = Dimensions.get('window');
 const filtersUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/filter';
 const doctorsUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/doc';
 
-const toastMessage = "К сожалению, нам не удалось найти мед.персонал.\nВыберите время, и наш оператор свяжется с Вами!";
+const toastMessage1 = "К сожалению, нам не удалось найти мед.персонал.\nВыберите время, и наш оператор свяжется с Вами!";
+const toastMessage2 = "К сожалению, нет врачей указанной сепциализации.\nВыберите другой фильтр!";
 
 export default class CenterScreen extends Component {
   state = {
@@ -105,11 +106,27 @@ export default class CenterScreen extends Component {
 
   renderChild() {
     const medCenter = this.props.navigation.getParam("center");
-    if (this.state.doctors) {
+    if (!!this.state.doctors) {
+      let doctors = this.state.doctors;
+      if (!!this.state.filters && this.state.type && this.state.type !== 'All') {
+        doctors = this.state.doctors.filter(doc => {
+          const flag = doc.profArea.filter(item => item.includes(this.state.type));
+          return !!flag.length;
+        });
+      }
+
+      if (!doctors.length) {
+        return (
+          <TouchableOpacity style={styles.toastWrapper}>
+            <Text style={{ "justifyContent": 'center' }}><Icon name="exclamation" size={15} color="red"/> {toastMessage2}</Text>
+          </TouchableOpacity>
+        )
+      }
+
       return (
         <View>
           {
-            this.state.doctors
+            doctors
               .map(doctor => (
                 <TouchableOpacity
                   onPress={() => this.handleChooseDoctor(doctor)}
@@ -131,7 +148,7 @@ export default class CenterScreen extends Component {
       )
     }
     else {
-      return <DoctorScreenSection center={medCenter}/>;
+      return <DoctorScreenSection center={medCenter} {...this.props}/>;
     }
   }
 
@@ -145,10 +162,17 @@ export default class CenterScreen extends Component {
           <Text style={styles.centrTitle}>{medCenter.title}</Text>
           {
             doctors &&
-            <Text style={styles.centrType}>{medCenter.type}</Text>
+            !!medCenter.phoneNumber &&
+            <Text style={styles.centerType}>{medCenter.phoneNumber}</Text>
           }
           {
             doctors &&
+            !!medCenter.type &&
+            <Text style={styles.centerType}>{medCenter.type}</Text>
+          }
+          {
+            doctors &&
+            !!medCenter.address &&
             <Text><Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {medCenter.address}</Text>
           }
           <Text><Icon name="clock-o" size={15} color="blue"/> {medCenter.workingHours}</Text>
@@ -157,7 +181,7 @@ export default class CenterScreen extends Component {
           fetchedDoctors &&
           !doctors &&
           <TouchableOpacity style={styles.toastWrapper}>
-            <Text style={{ "justifyContent": 'center' }}><Icon name="exclamation" size={15} color="red"/> {toastMessage}</Text>
+            <Text style={{ "justifyContent": 'center' }}><Icon name="exclamation" size={15} color="red"/> {toastMessage1}</Text>
           </TouchableOpacity>
         }
         <ScrollView
@@ -174,9 +198,7 @@ export default class CenterScreen extends Component {
           {
             doctors &&
             !filters &&
-            <View style={styles.shadow}>
-              <ActivityIndicator size="large" color="#0000ff"/>
-            </View>
+            <View style={styles.shadow}><ActivityIndicator size="large" color="#0000ff"/></View>
           }
           {
             doctors &&
@@ -230,6 +252,7 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
     justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: 'rgba(0, 0, 0, 0.1)',
     shadowOpacity: 0.8,
     elevation: 6,
@@ -237,7 +260,10 @@ const styles = StyleSheet.create({
     shadowOffset : { width: 1, height: 13},
   },
   horizontalScroll: {
-    height: 50,
+    height: 46,
+    minHeight: 46,
+    maxHeight: 46,
+    flex: 1,
   },
   contentContainer: {
     alignItems: 'center',
