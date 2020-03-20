@@ -35,7 +35,6 @@ const saveObj = async (obj) => {
   try {
     let response = await fetch(bUrl, params);
     let responseJson = await response.json();
-    console.log(responseJson);
     if (!!responseJson.error) throw new Error('Something during saving');
     return responseJson;
   } catch (error) {
@@ -44,15 +43,26 @@ const saveObj = async (obj) => {
   }
 };
 
-const handleClick = async (data) => {
+const returnToStart = ({ navigation }) => navigation.navigate('Home');
+
+const handleClick = async (data, props) => {
   const response = await saveObj(data);
   let type = null;
   let message = 'Ваш запрос успешно сохранен!';
   if (response.error) {
     type = 'Ошибка!';
     message = response.error.message ? response.error.message : 'Что-то пошло не так';
+    return Alert.alert(
+      type,
+      message,
+      [
+        { text: 'В начало', onPress: () => returnToStart(props) },
+        { text: 'Остаться', onPress: () => {} },
+      ],
+      { cancelable: false },
+    );
   }
-  Alert.alert(
+  return Alert.alert(
     type,
     message,
     [
@@ -67,9 +77,7 @@ const DoctorScreenSection = (props) => {
   const curDate = moment().format('YYYY-MM-DD');
   const [ time, setTime ] = useState(curTime);
   const [ date, setDate ] = useState(curDate);
-
   const data = props.doctor || props.center;
-
   return (
     <View style={styles.subContainer}>
       <DoctorsCalendar setDate={setDate} curDate={curDate}/>
@@ -78,7 +86,7 @@ const DoctorScreenSection = (props) => {
         <View style={styles.buttonStyles}>
           <Button
             title='Save Data'
-            onPress={() => handleClick({ time, date, data })}
+            onPress={() => handleClick({ time, date, data }, props)}
           />
         </View>
       </View>
