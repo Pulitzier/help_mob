@@ -35,7 +35,7 @@ const HeaderWrapper = (props) => {
       <Header
         containerStyle={styles.header}
         placement="right"
-        leftComponent={{ text: 'InCe', style: { color: '#fff' } }}
+        leftComponent={{ text: 'in-ce', style: { color: '#fff' } }}
         rightComponent={right}
       />
       <SearchWrapper
