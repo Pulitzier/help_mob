@@ -36,7 +36,6 @@ export default class DoctorTimePicker extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.timeBoardWrapper}>
-          <Icon name="clock-o" size={25} color="blue" style={styles.timeIcon}/>
           <TouchableOpacity
             onPress={() => this.TimePicker.open()}
             style={styles.timeBoard}
@@ -67,9 +66,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  timeIcon: {
-    paddingRight: 15
+    borderColor: 'blue',
+    borderRadius: 100,
+    borderWidth: 2,
+    marginTop: 5,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    width: 70,
+    height: 70,
   },
   text: {
     fontSize: 18,
@@ -77,15 +82,9 @@ const styles = StyleSheet.create({
   },
   timeBoard: {
     backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    marginVertical: 10,
+    padding: 0,
+    margin: 0,
     justifyContent: 'center',
-    shadowColor: 'rgba(0, 0, 0, 0.1)',
-    shadowOpacity: 0.8,
-    elevation: 6,
-    shadowRadius: 15 ,
-    shadowOffset : { width: 1, height: 13},
   },
   timeBoardText: {
     color: "gray",
