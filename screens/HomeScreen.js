@@ -73,11 +73,18 @@ export default class HomeScreen extends Component {
       >
         <View style={styles.centrCardStyles} key={item.title}>
           <Text style={styles.titleStyles}>{item.title}</Text>
-          <Text style={styles.centerType}>{item.type}</Text>
-          <Text>
-            <Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.address}
-          </Text>
+          {
+            !!item.phoneNumber &&
+            <Text style={{ fontSize: 14 }}>
+              <Icon name="phone" size={15} color="blue" style={{ display: 'flex' }}/> {item.phoneNumber}
+            </Text>
+          }
+          <Text><Icon name="map-marker" size={15} color="blue" style={{ display: 'flex' }}/> {item.address}</Text>
           <Text><Icon name="clock-o" size={15} color="blue"/> {item.workingHours}</Text>
+          {
+            !!item.type &&
+            <Text style={styles.centerType}>{item.type}</Text>
+          }
         </View>
       </TouchableOpacity>
     ));
