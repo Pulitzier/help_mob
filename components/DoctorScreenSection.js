@@ -10,7 +10,6 @@ const bUrl = 'https://rjjt56u7fb.execute-api.eu-central-1.amazonaws.com/stage/sa
 
 const saveObj = async (obj) => {
   const user = JSON.parse(await AsyncStorage.getItem('@user'))[0];
-  console.log(user);
   const jsonObj = {
     ...obj,
     user,
