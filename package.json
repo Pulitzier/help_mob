@@ -16,7 +16,7 @@
     "@expo/vector-icons": "^10.0.3",
     "@react-native-community/async-storage": "^1.7.1",
     "@react-navigation/web": "^1.0.0-alpha.9",
-    "aws-sdk": "^2.608.0",
+    "aws-sdk": "^2.814.0",
     "expo": "^35.0.0",
     "expo-asset": "^7.0.0",
     "expo-constants": "^7.0.0",
